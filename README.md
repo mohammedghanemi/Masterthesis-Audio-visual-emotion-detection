@@ -1,21 +1,72 @@
-# 🎞️ Video Preprocessing Pipeline
+# 🎞️ Audio-Visual Emotion Detection with CREMA-D, eNTERFACE, MFAW, and Mixed Datasets
 
-This Python script is a comprehensive preprocessing pipeline for video files, designed to extract various features for downstream analysis, such as emotion recognition or behavioral studies. The script leverages several libraries to handle video, audio, and facial feature extraction.
+## Overview
+This project implements **audio-visual emotion recognition** using the **CREMA-D**, **eNTERFACE**, and **MFAW** datasets. The system integrates audio and visual data through preprocessing, fusion strategies, and a fine-tuned **TF VideoMAE** model to predict both **discrete emotion categories** and **continuous arousal/valence values**. Mixed datasets are also supported for cross-dataset generalization.
 
-***
+---
 
-## 🚀 Features
+## Datasets
 
-The script performs the following key preprocessing tasks:
+1. **CREMA-D**
+   - Audio-visual clips labeled with six emotions: anger, happiness, neutral, disgust, fear, sadness.
+   - Audio: WAV/MP3; Video: MP4.
 
-* **Video Frame Extraction**: Reads video files, resizes frames, and performs uniform temporal subsampling to create consistent video clips.
-* **Audio Feature Extraction**: Extracts audio from videos and computes **Mel-Frequency Cepstral Coefficients (MFCCs)** 🎵. The MFCCs are then saved as a visual representation (a `.png` image).
-* **Facial Feature Extraction**: Utilizes the **OpenFace** library to extract a wide range of facial features, including:
-    * **Action Units (AUs)**: Quantifies facial muscle movements.
-    * **2D Facial Landmarks**
-    * **Head Pose**
-    * **Gaze Direction**
-* **Video Visualization**: Creates a new video file that overlays the extracted Action Unit (AU) information directly onto the video frames. This is a great way to visualize the output of OpenFace and inspect the data.
+2. **eNTERFACE**
+   - Synchronized audio-visual recordings for emotion recognition.
+   - Official dataset: [eNTERFACE05](https://enterface.net/enterface05/main.php?frame=emotion)
+
+3. **MFAW**
+   - Multimodal dataset with audio and video recordings for emotion recognition tasks.
+
+4. **Mixed Datasets**
+   - Combines CREMA-D, eNTERFACE, and MFAW for cross-dataset experiments.
+   - Ensures consistent multimodal input sequences for training.
+
+---
+
+### Model Architecture
+
+1. **Video Preprocessing**
+   - Frame extraction, resizing, and temporal sampling.
+   - Facial feature extraction (Action Units, head pose, gaze) using OpenFace.
+
+2. **Audio Preprocessing**
+   - Audio extraction from video clips.
+   - Generation of **MFCC** and **Mel spectrogram images**.
+
+3. **Audio-Visual Fusion**
+   - Combines video frames and audio feature images into unified multimodal sequences.
+   - Supports early, late, and hybrid fusion strategies.
+
+
+## TF VideoMAE Fine-Tuned Model
+
+The project uses a **TF VideoMAE encoder**, fine-tuned on the target datasets.
+
+- **Base Model**: VideoMAE pretrained on Kinetics-400
+  - Repository: [VideoMAE](https://github.com/innat/VideoMAE)
+  - Pretrained Model: [TFVideoMAE_L_K400_16x224_FT](https://github.com/innat/VideoMAE/releases/download/v1.1/TFVideoMAE_L_K400_16x224_FT)
+- **Fine-tuning**
+  - Model is fine-tuned on CREMA-D, eNTERFACE, MFAW, and mixed datasets.
+  - Captures emotion-specific spatio-temporal patterns in audio-visual sequences.
+
+---
+
+## Multi-Task Model: Classification & Regression
+
+The fine-tuned TF VideoMAE predicts:
+
+1. **Emotion Categories** (Classification)
+2. **Arousal & Valence** (Regression)
+
+
+## Dependencies
+
+Install required Python libraries:
+
+```bash
+pip install decord moviepy scipy numpy matplotlib tensorflow pandas opencv-python Pillow
+
 
 ***
 
